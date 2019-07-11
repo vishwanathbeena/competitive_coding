@@ -22,3 +22,19 @@ left outer join passenger_train_time pt
 on tr.departure_time = pt.train_time
 group by tr.id
 order by tr.id;
+
+-- Elevator Problem.
+
+--Solution:
+with WeightTotal as (
+    Select 
+        *
+        , Sum(weight) Over (Order By turn) as RunningWeightTotal
+    From line_test)
+   Select name 
+From WeightTotal
+Where RunningWeightTotal <= 1000
+Order by turn desc
+limit 1;
+
+
