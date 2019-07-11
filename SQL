@@ -1,0 +1,24 @@
+-- Trains and Passenger problem.
+--Each row of table Trains contains information about a single train. Train’s ID, Origin, Destination and departure time.
+--Each row of table passenger contains information about a single passenger, Passenger’s ID, Origin , Destination, and his arrival_time in station.
+--Passengers will board the earliest train available after they arrive at the station. They board only direct trains from their origin to destination.
+--They can board the train leaving in same minute they arrive in station, But they cannot board if the train’s departure time is even one second less than the passengers arrival time.
+
+--Assumptions:
+--Now two trains with same origin and destination will depart at same time.
+--No passenger will wait for train next day,means if he does not board the train on or before 23:59 he will leave the station
+
+--Solution:
+
+with passenger_train_time as (
+select p.id,min(t.departure_time) as train_time
+from Trains t, Passengers P      
+where ( p.origin = t.origin and
+      p.dest = t.dest )
+and p.departure_time <= t.departure_time
+group by p.id)
+select tr.id,count(pt.train_time) from trains tr
+left outer join passenger_train_time pt
+on tr.departure_time = pt.train_time
+group by tr.id
+order by tr.id;
